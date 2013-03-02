@@ -1,4 +1,5 @@
-#include <tulip/TulipPlugin.h>
+#include <tulip/ImportModule.h>
+#include <tulip/TulipPluginHeaders.h>
 #include <stdexcept>
 #include <vector>
 #include <cmath>
@@ -53,11 +54,13 @@ private:
 	double max_distance;
 
 public:
-	EpsilonNeighborhoodConnectorOnLayout(const tlp::AlgorithmContext &context):Algorithm(context) {
-		addParameter< LayoutProperty >   ("layout",           paramHelp[0], "viewLayout");
-		addParameter< DoubleProperty >   ("metric",           paramHelp[1], "viewMetric");
-		addParameter< StringCollection > ("distance type",    paramHelp[2], SupportedDistances);
-		addParameter< double >           ("maximum distance", paramHelp[3], "1"         );
+	PLUGININFORMATIONS("Build epsilon-neighborhood on layout", "Cyrille FAUCHEUX", "2012-01-17", "", "1.0", "Topology Update")
+
+	EpsilonNeighborhoodConnectorOnLayout(const tlp::PluginContext *context):Algorithm(context) {
+		addInParameter< LayoutProperty >   ("layout",           paramHelp[0], "viewLayout");
+		addInParameter< DoubleProperty >   ("metric",           paramHelp[1], "viewMetric");
+		addInParameter< StringCollection > ("distance type",    paramHelp[2], SupportedDistances);
+		addInParameter< double >           ("maximum distance", paramHelp[3], "1"         );
 	}
 
 	bool check(std::string &err) {
@@ -138,4 +141,4 @@ public:
 	~EpsilonNeighborhoodConnectorOnLayout() {}
 };
 
-ALGORITHMPLUGIN(EpsilonNeighborhoodConnectorOnLayout, "Build epsilon-neighborhood on layout", "Cyrille FAUCHEUX", "2012-01-17", "", "1.0");
+PLUGIN(EpsilonNeighborhoodConnectorOnLayout)
