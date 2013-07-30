@@ -1,5 +1,6 @@
 #include <tulip/ImportModule.h>
 #include <tulip/TulipPluginHeaders.h>
+#include <tulip/StringCollection.h>
 #include <stdexcept>
 #include <vector>
 #include <cmath>
