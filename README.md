@@ -15,7 +15,7 @@ More informations [here](http://tulip.labri.fr/TulipDrupal/?q=node/1481).
 The plugin needs the following parameters:
 
  * _layout_: The LayoutProperty to use to compute distances.
- * _matrix_: The DoubleProperty where the distance will be stored.
+ * _metric_: The DoubleProperty where the distance will be stored.
  * _distance type_: StringCollection indicating type of distance to use ("Euclidian", "Manhattan" or "Chebychev").
  * _maximum distance_: double representing the maximum distance between two connected nodes.
 
