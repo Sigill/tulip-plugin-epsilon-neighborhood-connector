@@ -22,9 +22,9 @@ namespace {
 	const char * SupportedDistances = DISTANCES;
 	const char * paramHelp[] = {
 		HTML_HELP_OPEN() \
-			HTML_HELP_DEF( "type", "LayoutProperty" ) \
+			HTML_HELP_DEF( "type", "IntegerVectorProperty" ) \
 			HTML_HELP_BODY() \
-			"The layout on which the distance will be computed." \
+			"The integerVector property on which the distance will be computed." \
 			HTML_HELP_CLOSE(),
 
 		HTML_HELP_OPEN() \
@@ -49,22 +49,22 @@ namespace {
 	};
 }
 
-class EpsilonNeighborhoodConnectorOnLayout:public tlp::Algorithm {
+class EpsilonNeighborhoodConnectorOnIntegerVector:public tlp::Algorithm {
 private:
-	tlp::LayoutProperty *layout;
+	tlp::IntegerVectorProperty *property;
 	tlp::DoubleProperty *metric;
 	tlp::StringCollection distance_type;
-	double (*distanceFunction)(const tlp::Coord&, const tlp::Coord&);
+	double (*distanceFunction)(const std::vector<int>&, const std::vector<int>&);
 	double max_distance;
 
 public:
-	PLUGININFORMATIONS("Build epsilon-neighborhood on layout", "Cyrille FAUCHEUX", "2012-01-17", "", "1.0", "Topology Update")
+	PLUGININFORMATIONS("Build epsilon-neighborhood on integerVector", "Cyrille FAUCHEUX", "2013-08-08", "", "1.0", "Topology Update")
 
-	EpsilonNeighborhoodConnectorOnLayout(const tlp::PluginContext *context):Algorithm(context) {
-		addInParameter< LayoutProperty >   ("layout",           paramHelp[0], "viewLayout");
-		addInParameter< DoubleProperty >   ("metric",           paramHelp[1], "viewMetric");
-		addInParameter< StringCollection > ("distance type",    paramHelp[2], SupportedDistances);
-		addInParameter< double >           ("maximum distance", paramHelp[3], "1");
+	EpsilonNeighborhoodConnectorOnIntegerVector(const tlp::PluginContext *context):Algorithm(context) {
+		addInParameter< IntegerVectorProperty > ("property",         paramHelp[0], "data");
+		addInParameter< DoubleProperty >        ("metric",           paramHelp[1], "viewMetric");
+		addInParameter< StringCollection >      ("distance type",    paramHelp[2], SupportedDistances);
+		addInParameter< double >                ("maximum distance", paramHelp[3], "1");
 	}
 
 	bool check(std::string &err) {
@@ -72,17 +72,17 @@ public:
 			if(dataSet == NULL)
 				throw std::runtime_error("No dataset provided.");
 
-			CHECK_PROP_PROVIDED("layout",           this->layout        );
+			CHECK_PROP_PROVIDED("property",         this->property      );
 			CHECK_PROP_PROVIDED("metric",           this->metric        );
 			CHECK_PROP_PROVIDED("distance type",    this->distance_type );
 			CHECK_PROP_PROVIDED("maximum distance", this->max_distance  );
 
 			if(distance_type.getCurrentString().compare("Euclidian") == 0) {
-				this->distanceFunction = euclidianDistance<tlp::Coord>;
+				this->distanceFunction = euclidianDistance< std::vector< int > >;
 			} else if(distance_type.getCurrentString().compare("Manhattan") == 0) {
-				this->distanceFunction = manhattanDistance<tlp::Coord>;
+				this->distanceFunction = manhattanDistance< std::vector< int > >;
 			} else if(distance_type.getCurrentString().compare("Chebychev") == 0) {
-				this->distanceFunction = chebychevDistance<tlp::Coord>;
+				this->distanceFunction = chebychevDistance< std::vector< int > >;
 			} else {
 				throw std::runtime_error("Unknown distance type.");
 			}
@@ -100,7 +100,7 @@ public:
 	bool run() {
 		node u, v;
 		edge e;
-		Coord cu, cv;
+		std::vector< int > cu, cv;
 		double d;
 
 		std::vector< node > nodes;
@@ -118,7 +118,7 @@ public:
 		std::vector< node >::const_iterator itU, itV, it_end = nodes.end();
 		for(itU = nodes.begin(); itU != it_end; ++itU) {
 			u = *itU;
-			cu = this->layout->getNodeValue(u);
+			cu = this->property->getNodeValue(u);
 
 			if(itU != it_end) {
 				/*
@@ -132,7 +132,7 @@ public:
 
 			for(; itV != it_end; ++itV) {
 				v = *itV;
-				cv = this->layout->getNodeValue(v);
+				cv = this->property->getNodeValue(v);
 
 				d = this->distanceFunction(cu, cv);
 
@@ -146,7 +146,7 @@ public:
 		return true;
 	}
 
-	~EpsilonNeighborhoodConnectorOnLayout() {}
+	~EpsilonNeighborhoodConnectorOnIntegerVector() {}
 };
 
-PLUGIN(EpsilonNeighborhoodConnectorOnLayout)
+PLUGIN(EpsilonNeighborhoodConnectorOnIntegerVector)

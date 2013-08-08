@@ -12,12 +12,17 @@ More informations [here](http://tulip.labri.fr/TulipDrupal/?q=node/1481).
 
 ## Use
 
-The plugin needs the following parameters:
+* _Build epsilon-neighborhood on integerVector_
+* _Build epsilon-neighborhood on doubleVector_
+* _Build epsilon-neighborhood on layout_
 
- * _layout_: The LayoutProperty to use to compute distances.
- * _metric_: The DoubleProperty where the distance will be stored.
- * _distance type_: StringCollection indicating type of distance to use ("Euclidian", "Manhattan" or "Chebychev").
- * _maximum distance_: double representing the maximum distance between two connected nodes.
+All plugins use the following parameters:
+
+* _metric_: The DoubleProperty where the distance will be stored.
+* _distance type_: StringCollection indicating type of distance to use ("Euclidian", "Manhattan" or "Chebychev").
+* _maximum distance_: double representing the maximum distance between two connected nodes.
+
+In order to specify which property to use to compute the distances, the two plugins working with Vector properties use the _property_ parameter, while the one one working on the layout use _layout_ parameter.
 
 ## LICENSE
 
